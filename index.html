@@ -42,11 +42,7 @@
     html {
       font-size: 16px;
       -webkit-text-size-adjust: 100%;
-      /* base âmbar quente que cobre todo o canvas, incluindo a safe area do notch */
-      background:
-        radial-gradient(130% 58% at 50% -12%, rgba(200,134,10,0.18), transparent 55%),
-        linear-gradient(180deg, #120c05 0%, #0a0a0a 42%, #0a0a0a 100%);
-      background-attachment: fixed;
+      background: #0a0a0a;
       scroll-behavior: smooth;
     }
 
@@ -101,50 +97,9 @@
       z-index: -3;
       pointer-events: none;
       background:
-        radial-gradient(135% 62% at 50% -14%, rgba(216,148,18,0.22), transparent 56%),
-        radial-gradient(120% 50% at 50% 108%, rgba(150,92,8,0.12), transparent 60%);
-      animation: glowDrift 14s ease-in-out infinite;
-    }
-    @keyframes glowDrift {
-      0%, 100% { opacity: 1; }
-      50%      { opacity: .82; }
-    }
-
-    /* "Colarinho" de espuma coroando o topo + notch */
-    .foam-top {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: calc(env(safe-area-inset-top, 0px) + 58px);
-      z-index: -2;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .foam-top::before {
-      content: "";
-      position: absolute; inset: -40% 0 0;
-      background: radial-gradient(120% 120% at 50% 0%, rgba(245,234,208,0.16), rgba(245,234,208,0.04) 45%, transparent 70%);
-    }
-    .foam-bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 36% 30%, rgba(255,250,238,0.62), rgba(233,221,192,0.30) 66%, rgba(233,221,192,0) 100%);
-      filter: blur(.4px);
-      animation: foamBob var(--fb, 5s) ease-in-out var(--fd, 0s) infinite;
-    }
-    @keyframes foamBob {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-3px); }
-    }
-
-    /* Textura de grão (cerveja não-filtrada) */
-    .grain {
-      position: fixed; inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      opacity: 0.045;
-      mix-blend-mode: overlay;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
+        radial-gradient(130% 65% at 50% -15%, rgba(200,134,10,0.20), transparent 58%),
+        radial-gradient(90% 55% at 50% 112%, rgba(200,134,10,0.07), transparent 60%),
+        var(--bg);
     }
 
     .ambient {
@@ -162,16 +117,15 @@
       width: var(--s);
       height: var(--s);
       border-radius: 50%;
-      background: radial-gradient(circle at 34% 30%, rgba(255,248,225,0.6), rgba(232,160,32,0.20) 52%, transparent 72%);
-      box-shadow: inset 0 0 0 1px rgba(255,244,214,0.10);
+      background: radial-gradient(circle at 32% 30%, rgba(232,160,32,0.55), rgba(200,134,10,0.10));
       opacity: 0;
       animation: rise var(--t) linear var(--delay) infinite;
     }
 
     @keyframes rise {
       0%   { transform: translateY(0) scale(.55);   opacity: 0; }
-      12%  { opacity: .55; }
-      88%  { opacity: .30; }
+      12%  { opacity: .5; }
+      88%  { opacity: .28; }
       100% { transform: translateY(-108vh) scale(1); opacity: 0; }
     }
 
@@ -906,41 +860,16 @@
 
   <!-- ── Ambient layers ── -->
   <div class="bg-glow" aria-hidden="true"></div>
-
-  <!-- Colarinho de espuma coroando o topo (preenche o notch) -->
-  <div class="foam-top" aria-hidden="true">
-    <span class="foam-bubble" style="left:-2%; bottom:6px;  width:26px; height:26px; --fb:5.2s; --fd:0s"></span>
-    <span class="foam-bubble" style="left:8%;  bottom:14px; width:16px; height:16px; --fb:6.1s; --fd:.6s"></span>
-    <span class="foam-bubble" style="left:15%; bottom:2px;  width:22px; height:22px; --fb:4.7s; --fd:1.1s"></span>
-    <span class="foam-bubble" style="left:24%; bottom:12px; width:13px; height:13px; --fb:5.8s; --fd:.3s"></span>
-    <span class="foam-bubble" style="left:31%; bottom:4px;  width:24px; height:24px; --fb:6.4s; --fd:.9s"></span>
-    <span class="foam-bubble" style="left:41%; bottom:14px; width:15px; height:15px; --fb:5.0s; --fd:1.4s"></span>
-    <span class="foam-bubble" style="left:48%; bottom:3px;  width:21px; height:21px; --fb:5.6s; --fd:.2s"></span>
-    <span class="foam-bubble" style="left:57%; bottom:13px; width:14px; height:14px; --fb:6.2s; --fd:.7s"></span>
-    <span class="foam-bubble" style="left:64%; bottom:5px;  width:25px; height:25px; --fb:4.9s; --fd:1.2s"></span>
-    <span class="foam-bubble" style="left:74%; bottom:13px; width:15px; height:15px; --fb:5.9s; --fd:.4s"></span>
-    <span class="foam-bubble" style="left:81%; bottom:2px;  width:23px; height:23px; --fb:6.5s; --fd:1.0s"></span>
-    <span class="foam-bubble" style="left:90%; bottom:12px; width:14px; height:14px; --fb:5.1s; --fd:.5s"></span>
-    <span class="foam-bubble" style="left:96%; bottom:5px;  width:20px; height:20px; --fb:5.7s; --fd:1.3s"></span>
-  </div>
-
-  <!-- Bolhas de carbonação subindo -->
   <div class="ambient" aria-hidden="true">
-    <span class="bubble" style="--x:8%;  --s:7px; --t:15s; --delay:0s"></span>
-    <span class="bubble" style="--x:16%; --s:4px; --t:19s; --delay:3s"></span>
-    <span class="bubble" style="--x:24%; --s:9px; --t:13s; --delay:6s"></span>
-    <span class="bubble" style="--x:33%; --s:5px; --t:21s; --delay:1.5s"></span>
-    <span class="bubble" style="--x:42%; --s:6px; --t:17s; --delay:8s"></span>
-    <span class="bubble" style="--x:50%; --s:4px; --t:23s; --delay:4s"></span>
-    <span class="bubble" style="--x:58%; --s:8px; --t:14s; --delay:10s"></span>
-    <span class="bubble" style="--x:67%; --s:5px; --t:18s; --delay:2.5s"></span>
-    <span class="bubble" style="--x:76%; --s:6px; --t:16s; --delay:7s"></span>
-    <span class="bubble" style="--x:84%; --s:4px; --t:22s; --delay:5s"></span>
-    <span class="bubble" style="--x:92%; --s:7px; --t:15s; --delay:11s"></span>
+    <span class="bubble" style="--x:8%;  --s:7px;  --t:15s; --delay:0s"></span>
+    <span class="bubble" style="--x:20%; --s:4px;  --t:19s; --delay:3s"></span>
+    <span class="bubble" style="--x:33%; --s:9px;  --t:13s; --delay:6s"></span>
+    <span class="bubble" style="--x:46%; --s:5px;  --t:21s; --delay:1.5s"></span>
+    <span class="bubble" style="--x:58%; --s:6px;  --t:17s; --delay:8s"></span>
+    <span class="bubble" style="--x:70%; --s:4px;  --t:23s; --delay:4s"></span>
+    <span class="bubble" style="--x:82%; --s:8px;  --t:14s; --delay:10s"></span>
+    <span class="bubble" style="--x:91%; --s:5px;  --t:18s; --delay:2.5s"></span>
   </div>
-
-  <!-- Textura de grão (cerveja não-filtrada) -->
-  <div class="grain" aria-hidden="true"></div>
 
   <!-- ── App bar ── -->
   <header class="app-bar" id="app-bar" aria-hidden="true">
