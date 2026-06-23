@@ -149,11 +149,12 @@
 
     .splash-glass {
       position: relative;
-      width: 104px;
-      height: 156px;
+      width: 124px;
+      aspect-ratio: 140 / 200;
       opacity: 0;
       transform: translateY(14px) scale(.92);
       transition: opacity .6s var(--ease), transform .6s var(--ease);
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,.55));
     }
     .splash.active .splash-glass { opacity: 1; transform: none; }
 
@@ -162,80 +163,56 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      z-index: 2;
       overflow: visible;
     }
+
     .glass-outline {
-      fill: rgba(255,255,255,0.025);
-      stroke: rgba(240,224,192,0.55);
-      stroke-width: 2.5;
-      filter: drop-shadow(0 8px 20px rgba(0,0,0,.5));
+      fill: rgba(255,255,255,0.03);
+      stroke: rgba(240,224,192,0.6);
+      stroke-width: 3;
     }
-    .glass-handle { fill: none; stroke: rgba(240,224,192,0.45); stroke-width: 2.5; }
-    .glass-highlight { fill: none; stroke: rgba(255,255,255,0.18); stroke-width: 3; stroke-linecap: round; }
+    .glass-handle { fill: none; stroke: rgba(240,224,192,0.5); stroke-width: 3; }
+    .glass-rim    { fill: none; stroke: rgba(255,255,255,.32); stroke-width: 1.5; }
 
-    .glass-liquid {
-      position: absolute;
-      left: 18%;
-      right: 28%;
-      bottom: 11%;
-      height: 0%;
-      z-index: 1;
-      overflow: hidden;
-      border-radius: 0 0 12px 12px;
-      background: linear-gradient(180deg, #f4c244 0%, #d99613 18%, #c8860a 55%, #8a5a06 100%);
-      box-shadow: inset 0 2px 6px rgba(255,255,255,.25), inset 0 -8px 14px rgba(0,0,0,.25);
-      transition: height 1.7s cubic-bezier(.3,.9,.25,1);
-    }
-    .glass-liquid.chug { transition: height .4s ease-in; height: 3% !important; }
-
+    .liquid-fill,
     .liquid-sheen {
-      position: absolute;
-      top: 0; bottom: 0; left: 14%;
-      width: 9%;
-      background: rgba(255,255,255,.16);
-      filter: blur(2px);
+      transition: y 1.7s cubic-bezier(.3,.9,.25,1), height 1.7s cubic-bezier(.3,.9,.25,1);
+    }
+    .liquid-fill.chug,
+    .liquid-sheen.chug {
+      transition: y .4s ease-in, height .4s ease-in;
+    }
+    .liquid-sheen { filter: blur(1px); }
+
+    .bubble-rise {
+      fill: rgba(255,255,255,.6);
+      opacity: 0;
+      animation: bubbleUp 2.3s ease-in infinite;
+    }
+    @keyframes bubbleUp {
+      0%   { transform: translateY(0) scale(.5);     opacity: 0; }
+      12%  { opacity: .85; }
+      85%  { opacity: .15; }
+      100% { transform: translateY(-128px) scale(1); opacity: 0; }
     }
 
     .foam-cap {
-      position: absolute;
-      left: -2%; right: -2%; top: -9px;
-      height: 18px;
       opacity: 0;
       transform: scale(.7);
+      transform-box: fill-box;
+      transform-origin: 50% 100%;
       transition: opacity .45s var(--ease), transform .45s cubic-bezier(.34,1.56,.64,1);
     }
-    .glass-liquid.show-foam .foam-cap { opacity: 1; transform: none; }
+    .foam-cap.show { opacity: 1; transform: none; }
 
-    .foam-bit {
-      position: absolute;
-      bottom: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #fffaf0, #efe2c8 70%);
+    .foam-drip {
+      opacity: 0;
+      transform: translateY(-8px) scaleY(.3);
+      transform-box: fill-box;
+      transform-origin: top;
+      transition: opacity .4s ease .15s, transform .5s cubic-bezier(.34,1.56,.64,1) .15s;
     }
-    .foam-bit:nth-child(2) { left: 0%;  width: 13px; height: 13px; }
-    .foam-bit:nth-child(3) { left: 11%; width: 16px; height: 16px; bottom: 1px; }
-    .foam-bit:nth-child(4) { left: 25%; width: 12px; height: 12px; }
-    .foam-bit:nth-child(5) { left: 36%; width: 17px; height: 17px; bottom: 2px; }
-    .foam-bit:nth-child(6) { left: 50%; width: 13px; height: 13px; }
-    .foam-bit:nth-child(7) { left: 62%; width: 16px; height: 16px; bottom: 1px; }
-    .foam-bit:nth-child(8) { left: 75%; width: 12px; height: 12px; }
-    .foam-bit:nth-child(9) { left: 86%; width: 14px; height: 14px; }
-
-    .bubble-rise {
-      position: absolute;
-      bottom: 2px;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.55);
-      animation: bubbleUp 2.4s ease-in infinite;
-    }
-    @keyframes bubbleUp {
-      0%   { transform: translateY(0) scale(.6); opacity: 0; }
-      15%  { opacity: .8; }
-      100% { transform: translateY(-120px) scale(1); opacity: 0; }
-    }
+    .foam-drip.show { opacity: 1; transform: translateY(0) scaleY(1); }
 
     .splash-text {
       text-align: center;
@@ -845,24 +822,46 @@
   <!-- ── Splash / Intro (tirando o chopp) ── -->
   <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Carregando Sutil Gastrobeer">
     <div class="splash-glass">
-      <svg class="glass-svg" viewBox="0 0 120 180" aria-hidden="true">
-        <path class="glass-outline" d="M22 10 H86 L76 158 Q74 168 64 168 H44 Q34 168 32 158 Z"/>
-        <path class="glass-handle" d="M86 46 Q110 46 110 74 Q110 102 86 102"/>
-        <line class="glass-highlight" x1="38" y1="22" x2="34" y2="148"/>
+      <svg class="glass-svg" viewBox="0 0 140 200" aria-hidden="true">
+        <defs>
+          <clipPath id="glassClip">
+            <path d="M35 22 L93 22 L89 172 Q88 184 76 184 L52 184 Q40 184 39 172 Z"/>
+          </clipPath>
+          <linearGradient id="liquidGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#f8cf57"/>
+            <stop offset="22%"  stop-color="#e8a020"/>
+            <stop offset="60%"  stop-color="#c8860a"/>
+            <stop offset="100%" stop-color="#7a4d05"/>
+          </linearGradient>
+          <radialGradient id="foamGrad" cx="35%" cy="25%" r="80%">
+            <stop offset="0%"   stop-color="#fffdf6"/>
+            <stop offset="100%" stop-color="#e9ddc0"/>
+          </radialGradient>
+        </defs>
+
+        <path class="glass-outline" d="M30 18 L98 18 L93 176 Q92 190 78 190 L50 190 Q36 190 35 176 Z"/>
+        <path class="glass-handle" d="M98 50 Q126 50 126 86 Q126 122 98 122"/>
+
+        <g clip-path="url(#glassClip)">
+          <rect id="liquidFill" class="liquid-fill" x="33" y="184" width="62" height="0" fill="url(#liquidGrad)"/>
+          <rect id="liquidSheen" class="liquid-sheen" x="44" y="184" width="8" height="0" fill="rgba(255,255,255,.15)"/>
+          <circle class="bubble-rise" cx="46" cy="178" r="2"   style="animation-delay:.5s"/>
+          <circle class="bubble-rise" cx="58" cy="178" r="1.6" style="animation-delay:1.3s"/>
+          <circle class="bubble-rise" cx="70" cy="178" r="2.2" style="animation-delay:.9s"/>
+          <circle class="bubble-rise" cx="80" cy="178" r="1.7" style="animation-delay:1.7s"/>
+          <circle class="bubble-rise" cx="52" cy="178" r="1.4" style="animation-delay:2.1s"/>
+          <g id="foamPos">
+            <g class="foam-cap" id="foamCap">
+              <path d="M2,16 C1,8 8,2 16,5 C18,-2 30,-3 33,4 C37,-3 49,-2 51,5 C58,2 63,9 62,16 C62,20 56,21 50,21 L12,21 C6,21 2,20 2,16 Z" fill="url(#foamGrad)"/>
+            </g>
+          </g>
+        </g>
+
+        <ellipse class="glass-rim" cx="64" cy="18" rx="34" ry="3"/>
+        <g transform="translate(33,16)">
+          <path id="foamDrip" class="foam-drip" d="M0,0 C4,2 5,9 3,14 C1,18 -3,17 -3,12 C-3,6 -3,2 0,0 Z" fill="url(#foamGrad)"/>
+        </g>
       </svg>
-      <div class="glass-liquid" id="glass-liquid">
-        <div class="liquid-sheen"></div>
-        <span class="bubble-rise" style="left:18%; animation-delay:.1s"></span>
-        <span class="bubble-rise" style="left:38%; animation-delay:.9s"></span>
-        <span class="bubble-rise" style="left:55%; animation-delay:.4s"></span>
-        <span class="bubble-rise" style="left:70%; animation-delay:1.3s"></span>
-        <span class="bubble-rise" style="left:30%; animation-delay:1.7s"></span>
-        <div class="foam-cap">
-          <span class="foam-bit"></span><span class="foam-bit"></span><span class="foam-bit"></span>
-          <span class="foam-bit"></span><span class="foam-bit"></span><span class="foam-bit"></span>
-          <span class="foam-bit"></span><span class="foam-bit"></span>
-        </div>
-      </div>
     </div>
     <div class="splash-text">
       <div class="splash-brand">Sutil <span>Gastrobeer</span></div>
@@ -905,7 +904,7 @@
     <div class="logo-wrap">
       <div class="logo-ring">
         <img
-          src="assets/logo.png"
+          src="logo.png"
           alt="Sutil Gastrobeer"
           id="logo-img"
           onload="this.style.display='block'; document.getElementById('logo-fallback').style.display='none';"
@@ -1099,29 +1098,51 @@
       }
 
       document.body.style.overflow = 'hidden';
-      var liquid   = document.getElementById('glass-liquid');
+
+      var fill     = document.getElementById('liquidFill');
+      var sheen    = document.getElementById('liquidSheen');
+      var foamPos  = document.getElementById('foamPos');
+      var foamCap  = document.getElementById('foamCap');
+      var foamDrip = document.getElementById('foamDrip');
       var tagline  = document.getElementById('splash-tagline');
       var timers   = [];
 
+      // interior do copo (clipPath): topo y=22, base y=184 → altura útil 162
+      var BOTTOM_Y   = 184;
+      var FILL_HEIGHT = 136; // ~84% do copo, sobra espaço pra espuma
+
       function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+
+      function setLevel(h, instant) {
+        var y = BOTTOM_Y - h;
+        [fill, sheen].forEach(function (el) {
+          if (!el) return;
+          if (instant) el.classList.add('chug'); else el.classList.remove('chug');
+          el.style.height = h;
+          el.style.y = y;
+        });
+      }
 
       function finish() {
         timers.forEach(clearTimeout);
         splash.classList.add('leaving');
-        if (liquid) liquid.classList.add('chug');
+        setLevel(8, true);
         setTimeout(reveal, 520);
       }
 
       at(150, function () { splash.classList.add('active'); });
       at(550, function () {
-        if (liquid) liquid.style.height = '78%';
+        setLevel(FILL_HEIGHT, false);
         if (tagline) tagline.textContent = 'Tirando o chopp gelado...';
       });
-      at(1450, function () {
+      at(1500, function () {
         if (tagline) tagline.textContent = 'Capricho na espuma...';
       });
-      at(2250, function () {
-        if (liquid) liquid.classList.add('show-foam');
+      at(2280, function () {
+        var liquidTopY = BOTTOM_Y - FILL_HEIGHT;
+        if (foamPos) foamPos.setAttribute('transform', 'translate(33,' + (liquidTopY - 16) + ')');
+        if (foamCap) foamCap.classList.add('show');
+        if (foamDrip) foamDrip.classList.add('show');
         if (tagline) tagline.textContent = 'Pronto! Bem-vindo.';
       });
       at(2950, finish);
