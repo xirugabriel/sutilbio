@@ -174,14 +174,6 @@
     .glass-handle { fill: none; stroke: rgba(240,224,192,0.5); stroke-width: 3; }
     .glass-rim    { fill: none; stroke: rgba(255,255,255,.32); stroke-width: 1.5; }
 
-    .liquid-fill,
-    .liquid-sheen {
-      transition: y 1.7s cubic-bezier(.3,.9,.25,1), height 1.7s cubic-bezier(.3,.9,.25,1);
-    }
-    .liquid-fill.chug,
-    .liquid-sheen.chug {
-      transition: y .4s ease-in, height .4s ease-in;
-    }
     .liquid-sheen { filter: blur(1px); }
 
     .bubble-rise {
@@ -1102,33 +1094,52 @@
       var foamDrip = document.getElementById('foamDrip');
       var tagline  = document.getElementById('splash-tagline');
       var timers   = [];
+      var rafId    = null;
 
       // interior do copo (clipPath): topo y=22, base y=184 → altura útil 162
-      var BOTTOM_Y   = 184;
+      var BOTTOM_Y    = 184;
       var FILL_HEIGHT = 136; // ~84% do copo, sobra espaço pra espuma
 
       function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+      function easeOutCubic(p) { return 1 - Math.pow(1 - p, 3); }
+      function easeInCubic(p)  { return p * p * p; }
 
-      function setLevel(h, instant) {
+      // anima via atributos SVG puros (setAttribute) em vez de CSS,
+      // pois Safari/iOS nem sempre aplica transições CSS em y/height de SVG
+      function setLevelAttrs(h) {
         var y = BOTTOM_Y - h;
-        [fill, sheen].forEach(function (el) {
-          if (!el) return;
-          if (instant) el.classList.add('chug'); else el.classList.remove('chug');
-          el.style.height = h;
-          el.style.y = y;
-        });
+        if (fill)  { fill.setAttribute('height', h);  fill.setAttribute('y', y); }
+        if (sheen) { sheen.setAttribute('height', h); sheen.setAttribute('y', y); }
+      }
+
+      function animateLevel(toH, duration, easeFn, onDone) {
+        if (rafId) cancelAnimationFrame(rafId);
+        var fromH = fill ? (parseFloat(fill.getAttribute('height')) || 0) : 0;
+        var t0 = null;
+        function step(ts) {
+          if (t0 === null) t0 = ts;
+          var p = Math.min(1, (ts - t0) / duration);
+          setLevelAttrs(fromH + (toH - fromH) * easeFn(p));
+          if (p < 1) {
+            rafId = requestAnimationFrame(step);
+          } else {
+            rafId = null;
+            if (onDone) onDone();
+          }
+        }
+        rafId = requestAnimationFrame(step);
       }
 
       function finish() {
         timers.forEach(clearTimeout);
         splash.classList.add('leaving');
-        setLevel(8, true);
+        animateLevel(8, 380, easeInCubic);
         setTimeout(reveal, 520);
       }
 
       at(150, function () { splash.classList.add('active'); });
       at(550, function () {
-        setLevel(FILL_HEIGHT, false);
+        animateLevel(FILL_HEIGHT, 1700, easeOutCubic);
         if (tagline) tagline.textContent = 'Tirando o chopp gelado...';
       });
       at(1500, function () {
