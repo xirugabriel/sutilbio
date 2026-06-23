@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Sutil Gastrobeer | Porto Velho, RO</title>
+  <meta name="description" content="A top tap house de Rondônia. Chopp self-service, karaokê e delivery em Porto Velho. Abrimos quarta a sábado.">
+  <meta name="theme-color" content="#0a0a0a">
+
+  <!-- Favicon / ícone -->
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+
+  <!-- App feel -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sutil">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Sutil Gastrobeer | Porto Velho, RO">
+  <meta property="og:description" content="A top tap house de Rondônia. Chopp self-service, karaokê e delivery em Porto Velho.">
+  <meta property="og:image" content="https://sutilgastrobeer.com.br/assets/images/card.jpg">
+  <meta property="og:url" content="https://sutilgastrobeer.com.br">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sutil Gastrobeer">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sutil Gastrobeer | Porto Velho, RO">
+  <meta name="twitter:description" content="A top tap house de Rondônia. Chopp self-service, karaokê e delivery.">
+  <meta name="twitter:image" content="https://sutilgastrobeer.com.br/assets/images/card.jpg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      background: #0a0a0a;
+      scroll-behavior: smooth;
+    }
+
+    /* ── Tokens ── */
+    :root {
+      --bg:        #0a0a0a;
+      --surface:   #141414;
+      --surface2:  #1c1c1c;
+      --glass:     rgba(255,255,255,0.035);
+      --glass-hi:  rgba(255,255,255,0.06);
+      --border:    rgba(255,255,255,0.07);
+      --border-md: rgba(255,255,255,0.12);
+      --gold:      #c8860a;
+      --gold-lt:   #e8a020;
+      --gold-bg:   rgba(200,134,10,0.10);
+      --cream:     #f0e0c0;
+      --muted:     #888;
+      --dim:       #555;
+      --green:     #3ecf6e;
+      --green-bg:  rgba(62,207,110,0.10);
+      --red:       #e05252;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --max-w:     420px;
+      --ease:      cubic-bezier(.16,1,.3,1);
+      --font: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+      background: transparent;
+      color: var(--cream);
+      font-family: var(--font);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding:
+        0
+        max(16px, env(safe-area-inset-right))
+        calc(60px + env(safe-area-inset-bottom))
+        max(16px, env(safe-area-inset-left));
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+      overflow-x: hidden;
+    }
+
+    /* ── Ambient background layers ── */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background:
+        radial-gradient(130% 65% at 50% -15%, rgba(200,134,10,0.20), transparent 58%),
+        radial-gradient(90% 55% at 50% 112%, rgba(200,134,10,0.07), transparent 60%),
+        var(--bg);
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -24px;
+      left: var(--x);
+      width: var(--s);
+      height: var(--s);
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%, rgba(232,160,32,0.55), rgba(200,134,10,0.10));
+      opacity: 0;
+      animation: rise var(--t) linear var(--delay) infinite;
+    }
+
+    @keyframes rise {
+      0%   { transform: translateY(0) scale(.55);   opacity: 0; }
+      12%  { opacity: .5; }
+      88%  { opacity: .28; }
+      100% { transform: translateY(-108vh) scale(1); opacity: 0; }
+    }
+
+    /* ── Splash / Intro (chopp enchendo o copo) ── */
+    .splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      background:
+        radial-gradient(120% 70% at 50% -10%, rgba(200,134,10,0.22), transparent 55%),
+        var(--bg);
+      transition: opacity .5s ease;
+    }
+    .splash.leaving { opacity: 0; pointer-events: none; }
+    .splash[hidden] { display: none; }
+
+    .splash-glass {
+      position: relative;
+      width: 104px;
+      height: 156px;
+      opacity: 0;
+      transform: translateY(14px) scale(.92);
+      transition: opacity .6s var(--ease), transform .6s var(--ease);
+    }
+    .splash.active .splash-glass { opacity: 1; transform: none; }
+
+    .glass-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      overflow: visible;
+    }
+    .glass-outline {
+      fill: rgba(255,255,255,0.025);
+      stroke: rgba(240,224,192,0.55);
+      stroke-width: 2.5;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,.5));
+    }
+    .glass-handle { fill: none; stroke: rgba(240,224,192,0.45); stroke-width: 2.5; }
+    .glass-highlight { fill: none; stroke: rgba(255,255,255,0.18); stroke-width: 3; stroke-linecap: round; }
+
+    .glass-liquid {
+      position: absolute;
+      left: 18%;
+      right: 28%;
+      bottom: 11%;
+      height: 0%;
+      z-index: 1;
+      overflow: hidden;
+      border-radius: 0 0 12px 12px;
+      background: linear-gradient(180deg, #f4c244 0%, #d99613 18%, #c8860a 55%, #8a5a06 100%);
+      box-shadow: inset 0 2px 6px rgba(255,255,255,.25), inset 0 -8px 14px rgba(0,0,0,.25);
+      transition: height 1.7s cubic-bezier(.3,.9,.25,1);
+    }
+    .glass-liquid.chug { transition: height .4s ease-in; height: 3% !important; }
+
+    .liquid-sheen {
+      position: absolute;
+      top: 0; bottom: 0; left: 14%;
+      width: 9%;
+      background: rgba(255,255,255,.16);
+      filter: blur(2px);
+    }
+
+    .foam-cap {
+      position: absolute;
+      left: -2%; right: -2%; top: -9px;
+      height: 18px;
+      opacity: 0;
+      transform: scale(.7);
+      transition: opacity .45s var(--ease), transform .45s cubic-bezier(.34,1.56,.64,1);
+    }
+    .glass-liquid.show-foam .foam-cap { opacity: 1; transform: none; }
+
+    .foam-bit {
+      position: absolute;
+      bottom: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fffaf0, #efe2c8 70%);
+    }
+    .foam-bit:nth-child(2) { left: 0%;  width: 13px; height: 13px; }
+    .foam-bit:nth-child(3) { left: 11%; width: 16px; height: 16px; bottom: 1px; }
+    .foam-bit:nth-child(4) { left: 25%; width: 12px; height: 12px; }
+    .foam-bit:nth-child(5) { left: 36%; width: 17px; height: 17px; bottom: 2px; }
+    .foam-bit:nth-child(6) { left: 50%; width: 13px; height: 13px; }
+    .foam-bit:nth-child(7) { left: 62%; width: 16px; height: 16px; bottom: 1px; }
+    .foam-bit:nth-child(8) { left: 75%; width: 12px; height: 12px; }
+    .foam-bit:nth-child(9) { left: 86%; width: 14px; height: 14px; }
+
+    .bubble-rise {
+      position: absolute;
+      bottom: 2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.55);
+      animation: bubbleUp 2.4s ease-in infinite;
+    }
+    @keyframes bubbleUp {
+      0%   { transform: translateY(0) scale(.6); opacity: 0; }
+      15%  { opacity: .8; }
+      100% { transform: translateY(-120px) scale(1); opacity: 0; }
+    }
+
+    .splash-text {
+      text-align: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .6s var(--ease) .15s, transform .6s var(--ease) .15s;
+    }
+    .splash.active .splash-text { opacity: 1; transform: none; }
+
+    .splash-brand {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cream);
+    }
+    .splash-brand span { color: var(--gold-lt); margin-left: 4px; }
+
+    .splash-tagline {
+      margin-top: 6px;
+      font-size: 12px;
+      letter-spacing: .3px;
+      color: var(--muted);
+      min-height: 16px;
+    }
+
+    .splash-skip {
+      position: absolute;
+      bottom: max(28px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity .5s ease .8s, border-color .2s, color .2s;
+    }
+    .splash.active .splash-skip { opacity: 1; }
+    .splash-skip:hover { border-color: var(--gold); color: var(--gold-lt); }
+
+    /* ── App bar (collapses in on scroll) ── */
+    .app-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      padding: max(10px, env(safe-area-inset-top)) 16px 10px;
+      background: rgba(10,10,10,0.72);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      border-bottom: 1px solid var(--border);
+      transform: translateY(-105%);
+      opacity: 0;
+      transition: transform .45s var(--ease), opacity .3s ease;
+    }
+
+    .app-bar.visible { transform: none; opacity: 1; }
+
+    .app-bar-inner {
+      width: 100%;
+      max-width: var(--max-w);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ab-logo {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      box-shadow: 0 0 14px rgba(200,134,10,0.35);
+    }
+    .ab-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .ab-logo svg { width: 16px; height: 16px; stroke: var(--gold); fill: none; stroke-width: 1.5; }
+
+    .ab-title {
+      font-size: 14px; font-weight: 700; letter-spacing: .4px;
+      color: var(--cream); white-space: nowrap;
+    }
+    .ab-title span { color: var(--gold-lt); }
+
+    .ab-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 600; letter-spacing: .2px;
+      margin-left: auto;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+    }
+    .ab-status.open   { color: var(--green);   background: var(--green-bg); border-color: rgba(62,207,110,0.25); }
+    .ab-status.soon   { color: var(--gold-lt); background: var(--gold-bg);  border-color: rgba(200,134,10,0.25); }
+    .ab-status.closed { color: var(--muted);   background: rgba(255,255,255,0.04); border-color: var(--border); }
+    .ab-status.open .status-dot { animation: pulse 2s ease-in-out infinite; }
+
+    /* ── Hero ── */
+    .hero {
+      width: 100%;
+      max-width: var(--max-w);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: calc(52px + env(safe-area-inset-top)) 0 28px;
+    }
+
+    .logo-wrap {
+      position: relative;
+      width: 108px; height: 108px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    /* rotating conic halo */
+    .logo-wrap::before {
+      content: "";
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg,
+        transparent 0deg, rgba(232,160,32,0) 50deg,
+        var(--gold-lt) 150deg, var(--gold) 205deg, transparent 290deg);
+      animation: ringSpin 6s linear infinite;
+      filter: blur(.5px);
+    }
+    /* mask center → leaves a thin animated ring */
+    .logo-wrap::after {
+      content: "";
+      position: absolute; inset: 5px;
+      border-radius: 50%;
+      background: var(--bg);
+    }
+
+    .logo-ring {
+      position: relative;
+      z-index: 1;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 0 38px rgba(200,134,10,0.35), inset 0 0 18px rgba(0,0,0,0.5);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(200,134,10,0.28), inset 0 0 18px rgba(0,0,0,0.5); }
+      50%      { box-shadow: 0 0 46px rgba(200,134,10,0.45), inset 0 0 18px rgba(0,0,0,0.5); }
+    }
+
+    @keyframes ringSpin { to { transform: rotate(360deg); } }
+
+    .logo-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: none; /* shown via JS if image loads */
+    }
+
+    .logo-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .logo-fallback svg {
+      width: 56px;
+      height: 56px;
+      display: block;
+    }
+
+    .taphouse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold-bg);
+      border: 1px solid rgba(200,134,10,0.2);
+      border-radius: 20px;
+      padding: 5px 13px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--gold-lt);
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .brand-name {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 5px;
+      background: linear-gradient(180deg, #fff6e2 0%, var(--cream) 55%, #cdb78c 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 18px rgba(200,134,10,0.18);
+    }
+
+    .brand-city {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    /* ── Status pill ── */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      border: 1px solid transparent;
+      transition: all 0.3s var(--ease);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .status.open {
+      background: var(--green-bg);
+      border-color: rgba(62,207,110,0.25);
+      color: var(--green);
+      box-shadow: 0 0 22px rgba(62,207,110,0.12);
+    }
+
+    .status.soon {
+      background: var(--gold-bg);
+      border-color: rgba(200,134,10,0.25);
+      color: var(--gold-lt);
+    }
+
+    .status.closed {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .status.open .status-dot { animation: pulse 2s ease-in-out infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    /* ── Wrapper ── */
+    .wrap {
+      width: 100%;
+      max-width: var(--max-w);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* ── Section label ── */
+    .label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--dim);
+      padding: 0 2px;
+      margin-top: 4px;
+    }
+
+    /* ── Hours card ── */
+    .hours-card {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .hour-block {
+      padding: 15px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hour-days {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hour-time {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: 0.3px;
+    }
+
+    .hour-divider {
+      background: var(--border);
+      align-self: stretch;
+    }
+
+    /* ── CTA button ── */
+    .cta-btn {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 17px;
+      background: linear-gradient(135deg, var(--gold-lt) 0%, var(--gold) 100%);
+      color: #1a0e00;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.18s var(--ease), box-shadow 0.25s ease, filter 0.2s ease;
+      margin-top: 8px;
+      box-shadow: 0 10px 26px rgba(200,134,10,0.30), inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+
+    .cta-btn::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -60%;
+      width: 45%; height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255,255,255,0.5), transparent);
+      transform: skewX(-20deg);
+      animation: shine 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes shine {
+      0%   { left: -60%; }
+      18%  { left: 135%; }
+      100% { left: 135%; }
+    }
+
+    .cta-btn:hover  { filter: brightness(1.05); box-shadow: 0 14px 32px rgba(200,134,10,0.42), inset 0 1px 0 rgba(255,255,255,0.25); transform: translateY(-2px); }
+    .cta-btn:active { transform: scale(0.98); }
+
+    .cta-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .cta-btn span:not(.ripple) { position: relative; z-index: 2; }
+
+    /* ── Link cards ── */
+    .link-card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s var(--ease), box-shadow 0.25s ease;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .link-card:hover {
+      border-color: var(--border-md);
+      background: var(--glass-hi);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+    }
+    .link-card:active { transform: scale(0.99); }
+
+    .link-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.25s var(--ease);
+    }
+    .link-card:hover .link-icon { transform: scale(1.08); }
+
+    .link-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .link-text { flex: 1; min-width: 0; }
+
+    .link-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--cream);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .link-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .link-arrow svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--dim);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.25s var(--ease), stroke 0.25s ease;
+    }
+    .link-card:hover .link-arrow svg { transform: translateX(3px); stroke: var(--gold-lt); }
+
+    /* icon color variants */
+    .ic-green  { background: rgba(62,207,110,0.10); color: var(--green); }
+    .ic-gold   { background: var(--gold-bg);        color: var(--gold-lt); }
+    .ic-blue   { background: rgba(99,160,255,0.10); color: #7ab4ff; }
+    .ic-purple { background: rgba(180,120,255,0.10);color: #c590ff; }
+    .ic-teal   { background: rgba(0,200,175,0.10);  color: #00c8af; }
+    .ic-red    { background: rgba(255,100,80,0.10); color: #ff8070; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+
+    /* ── Social row ── */
+    .social-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      padding: 6px 0;
+    }
+
+    .social-btn {
+      position: relative;
+      overflow: hidden;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      transition: border-color 0.25s ease, color 0.25s ease, transform 0.2s var(--ease), box-shadow 0.25s ease;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .social-btn:hover  { border-color: var(--gold); color: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(200,134,10,0.20); }
+    .social-btn:active { transform: scale(0.95); }
+
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--dim);
+      padding-top: 6px;
+    }
+
+    /* ── Ripple ── */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      transform: scale(0);
+      animation: ripple 0.6s ease-out;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes ripple { to { transform: scale(1); opacity: 0; } }
+
+    /* ── Entrance animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .hero > *, .wrap > * {
+      opacity: 0;
+    }
+
+    body.revealed .hero > *, body.revealed .wrap > * {
+      animation-name: fadeUp;
+      animation-duration: 0.75s;
+      animation-timing-function: var(--ease);
+      animation-fill-mode: both;
+    }
+
+    .hero > *:nth-child(1) { animation-delay: 0.08s; }
+    .hero > *:nth-child(2) { animation-delay: 0.18s; }
+    .hero > *:nth-child(3) { animation-delay: 0.26s; }
+    .hero > *:nth-child(4) { animation-delay: 0.34s; }
+    .hero > *:nth-child(5) { animation-delay: 0.42s; }
+
+    .wrap > *:nth-child(1)  { animation-delay: 0.50s; }
+    .wrap > *:nth-child(2)  { animation-delay: 0.56s; }
+    .wrap > *:nth-child(3)  { animation-delay: 0.62s; }
+    .wrap > *:nth-child(4)  { animation-delay: 0.68s; }
+    .wrap > *:nth-child(5)  { animation-delay: 0.74s; }
+    .wrap > *:nth-child(6)  { animation-delay: 0.80s; }
+    .wrap > *:nth-child(7)  { animation-delay: 0.86s; }
+    .wrap > *:nth-child(8)  { animation-delay: 0.92s; }
+    .wrap > *:nth-child(9)  { animation-delay: 0.98s; }
+    .wrap > *:nth-child(10) { animation-delay: 1.04s; }
+    .wrap > *:nth-child(11) { animation-delay: 1.10s; }
+    .wrap > *:nth-child(12) { animation-delay: 1.16s; }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+      .hero > *, .wrap > * { opacity: 1 !important; transform: none !important; }
+      .bubble { display: none; }
+      .splash { display: none !important; }
+    }
+
+    /* ── Tiny screens ── */
+    @media (max-width: 360px) {
+      .brand-name { font-size: 21px; }
+      .hour-time  { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <noscript>
+    <style>
+      #splash { display: none !important; }
+      .hero > *, .wrap > * { opacity: 1 !important; transform: none !important; animation: none !important; }
+    </style>
+  </noscript>
+
+  <!-- ── Splash / Intro (tirando o chopp) ── -->
+  <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Carregando Sutil Gastrobeer">
+    <div class="splash-glass">
+      <svg class="glass-svg" viewBox="0 0 120 180" aria-hidden="true">
+        <path class="glass-outline" d="M22 10 H86 L76 158 Q74 168 64 168 H44 Q34 168 32 158 Z"/>
+        <path class="glass-handle" d="M86 46 Q110 46 110 74 Q110 102 86 102"/>
+        <line class="glass-highlight" x1="38" y1="22" x2="34" y2="148"/>
+      </svg>
+      <div class="glass-liquid" id="glass-liquid">
+        <div class="liquid-sheen"></div>
+        <span class="bubble-rise" style="left:18%; animation-delay:.1s"></span>
+        <span class="bubble-rise" style="left:38%; animation-delay:.9s"></span>
+        <span class="bubble-rise" style="left:55%; animation-delay:.4s"></span>
+        <span class="bubble-rise" style="left:70%; animation-delay:1.3s"></span>
+        <span class="bubble-rise" style="left:30%; animation-delay:1.7s"></span>
+        <div class="foam-cap">
+          <span class="foam-bit"></span><span class="foam-bit"></span><span class="foam-bit"></span>
+          <span class="foam-bit"></span><span class="foam-bit"></span><span class="foam-bit"></span>
+          <span class="foam-bit"></span><span class="foam-bit"></span>
+        </div>
+      </div>
+    </div>
+    <div class="splash-text">
+      <div class="splash-brand">Sutil <span>Gastrobeer</span></div>
+      <div class="splash-tagline" id="splash-tagline">Servindo o copo...</div>
+    </div>
+    <button class="splash-skip" id="splash-skip" type="button">pular</button>
+  </div>
+
+  <!-- ── Ambient layers ── -->
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true">
+    <span class="bubble" style="--x:8%;  --s:7px;  --t:15s; --delay:0s"></span>
+    <span class="bubble" style="--x:20%; --s:4px;  --t:19s; --delay:3s"></span>
+    <span class="bubble" style="--x:33%; --s:9px;  --t:13s; --delay:6s"></span>
+    <span class="bubble" style="--x:46%; --s:5px;  --t:21s; --delay:1.5s"></span>
+    <span class="bubble" style="--x:58%; --s:6px;  --t:17s; --delay:8s"></span>
+    <span class="bubble" style="--x:70%; --s:4px;  --t:23s; --delay:4s"></span>
+    <span class="bubble" style="--x:82%; --s:8px;  --t:14s; --delay:10s"></span>
+    <span class="bubble" style="--x:91%; --s:5px;  --t:18s; --delay:2.5s"></span>
+  </div>
+
+  <!-- ── App bar ── -->
+  <header class="app-bar" id="app-bar" aria-hidden="true">
+    <div class="app-bar-inner">
+      <div class="ab-logo" id="ab-logo">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <text x="12" y="18" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700" fill="#e8a020">S</text>
+        </svg>
+      </div>
+      <div class="ab-title">Sutil <span>Gastrobeer</span></div>
+      <div class="ab-status closed" id="ab-status">
+        <span class="status-dot"></span>
+        <span id="ab-status-text">—</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="logo-wrap">
+      <div class="logo-ring">
+        <img
+          src="assets/logo.png"
+          alt="Sutil Gastrobeer"
+          id="logo-img"
+          onload="this.style.display='block'; document.getElementById('logo-fallback').style.display='none';"
+          onerror="if(!this.dataset.f){this.dataset.f='1'; this.src='https://sutilgastrobeer.com.br/assets/images/image02.jpg';} else { this.style.display='none'; }"
+        >
+        <div class="logo-fallback" id="logo-fallback">
+          <!-- Monograma "S" (fallback) -->
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <text x="24" y="35" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" fill="#e8a020">S</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="taphouse-badge">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Top 1° Tap House de Rondônia
+    </div>
+
+    <div class="brand-name">Sutil Gastrobeer</div>
+    <div class="brand-city">Porto Velho · RO</div>
+
+    <div class="status closed" id="status-pill">
+      <div class="status-dot"></div>
+      <span id="status-text">Carregando...</span>
+    </div>
+  </div>
+
+  <!-- ── CONTEÚDO ── -->
+  <div class="wrap">
+
+    <!-- Horários -->
+    <p class="label">Horários</p>
+    <div class="hours-card">
+      <div class="hour-block">
+        <div class="hour-days">Qua · Qui</div>
+        <div class="hour-time">18h – 00h</div>
+      </div>
+      <div class="hour-divider"></div>
+      <div class="hour-block">
+        <div class="hour-days">Sex · Sáb</div>
+        <div class="hour-time">19h – 01h30</div>
+      </div>
+    </div>
+
+    <!-- CTA Delivery -->
+    <a href="https://menu.brendi.com.br/sutilgastrobeer" class="cta-btn" target="_blank" rel="noopener" aria-label="Fazer pedido via delivery">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <span>Fazer pedido · Delivery</span>
+    </a>
+
+    <!-- Links principais -->
+    <p class="label" style="margin-top:6px">Acesse</p>
+
+    <a href="https://wa.me/5569993776970" class="link-card" target="_blank" rel="noopener">
+      <div class="link-icon ic-green">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+        </svg>
+      </div>
+      <div class="link-text">
+        <div class="link-title">Falar com a gente</div>
+        <div class="link-desc">WhatsApp direto</div>
+      </div>
+      <div class="link-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="https://karaokesutil.vercel.app/" class="link-card" target="_blank" rel="noopener">
+      <div class="link-icon ic-gold">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+          <line x1="8"  y1="22" x2="16" y2="22"/>
+        </svg>
+      </div>
+      <div class="link-text">
+        <div class="link-title">Karaokê</div>
+        <div class="link-desc">Escolha sua música da noite</div>
+      </div>
+      <div class="link-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="https://webapp.beerme.com.br/s9e3?tn=36" class="link-card" target="_blank" rel="noopener">
+      <div class="link-icon ic-blue">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="2"/>
+          <line x1="9" y1="12" x2="15" y2="12"/>
+          <line x1="9" y1="16" x2="13" y2="16"/>
+        </svg>
+      </div>
+      <div class="link-text">
+        <div class="link-title">Cardápio completo</div>
+        <div class="link-desc">Chopps, petiscos e muito mais</div>
+      </div>
+      <div class="link-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="https://chat.whatsapp.com/GnkU88efPz8CW8T51MwvCO" class="link-card" target="_blank" rel="noopener">
+      <div class="link-icon ic-purple">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="link-text">
+        <div class="link-title">Nossa comunidade</div>
+        <div class="link-desc">Grupo no WhatsApp</div>
+      </div>
+      <div class="link-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <a href="https://maps.app.goo.gl/mk1mSaN9RzS41FsD6" class="link-card" target="_blank" rel="noopener">
+      <div class="link-icon ic-teal">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>
+      <div class="link-text">
+        <div class="link-title">Como chegar</div>
+        <div class="link-desc">Ver no Google Maps</div>
+      </div>
+      <div class="link-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </a>
+
+    <!-- Divider -->
+    <div class="divider"></div>
+
+    <!-- Redes sociais -->
+    <div class="social-row">
+      <a href="https://instagram.com/sutilgastrobeer" class="social-btn" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+        </svg>
+      </a>
+      <a href="https://tiktok.com/@sutilgastrobeer" class="social-btn" target="_blank" rel="noopener" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+        </svg>
+      </a>
+      <a href="https://facebook.com/sutilgastrobeer" class="social-btn" target="_blank" rel="noopener" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="footer">© Sutil Gastrobeer · Porto Velho, RO</div>
+
+  </div>
+
+  <script>
+    // ── Splash: enche o copo de chopp antes de revelar o site ──
+    (function () {
+      var splash = document.getElementById('splash');
+      if (!splash) return;
+
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var already = false;
+      try { already = sessionStorage.getItem('sutilIntroShown') === '1'; } catch (e) {}
+
+      function reveal() {
+        splash.hidden = true;
+        document.body.classList.add('revealed');
+        document.body.style.overflow = '';
+        try { sessionStorage.setItem('sutilIntroShown', '1'); } catch (e) {}
+      }
+
+      if (prefersReduced || already) {
+        reveal();
+        return;
+      }
+
+      document.body.style.overflow = 'hidden';
+      var liquid   = document.getElementById('glass-liquid');
+      var tagline  = document.getElementById('splash-tagline');
+      var timers   = [];
+
+      function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+
+      function finish() {
+        timers.forEach(clearTimeout);
+        splash.classList.add('leaving');
+        if (liquid) liquid.classList.add('chug');
+        setTimeout(reveal, 520);
+      }
+
+      at(150, function () { splash.classList.add('active'); });
+      at(550, function () {
+        if (liquid) liquid.style.height = '78%';
+        if (tagline) tagline.textContent = 'Tirando o chopp gelado...';
+      });
+      at(1450, function () {
+        if (tagline) tagline.textContent = 'Capricho na espuma...';
+      });
+      at(2250, function () {
+        if (liquid) liquid.classList.add('show-foam');
+        if (tagline) tagline.textContent = 'Pronto! Bem-vindo.';
+      });
+      at(2950, finish);
+
+      var skipBtn = document.getElementById('splash-skip');
+      if (skipBtn) skipBtn.addEventListener('click', finish);
+    })();
+
+    // ── Status dinâmico baseado no horário de Brasília ──
+    function computeStatus() {
+      const now = new Date();
+      const brt = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+      const day  = brt.getDay();   // 0=dom 1=seg ... 6=sáb
+      const hour = brt.getHours();
+      const min  = brt.getMinutes();
+      const hm   = hour + min / 60;
+
+      // Quarta (3) e quinta (4): 18h–00h
+      const wt = (day === 3 || day === 4) && hm >= 18 && hm < 24;
+      // Sexta (5): 19h–01h30
+      const ft = day === 5 && hm >= 19;
+      // Sábado (6) até 01h30; e domingo cedo até 01h30
+      const st = (day === 6 && hm >= 19) || (day === 0 && hm < 1.5);
+
+      // "Abre em breve" — até 2h antes
+      const wt_soon = (day === 3 || day === 4) && hm >= 16 && hm < 18;
+      const ft_soon = day === 5 && hm >= 17 && hm < 19;
+      const st_soon = day === 6 && hm >= 17 && hm < 19;
+
+      if (wt) {
+        const closes = (24 - hour === 1) ? 'fecha em menos de 1h' : 'até 00h';
+        return { state: 'open', main: `Abertos agora · ${closes}`, short: 'Aberto' };
+      }
+      if (ft || st) return { state: 'open', main: 'Abertos agora · até 01h30', short: 'Aberto' };
+      if (wt_soon)  return { state: 'soon', main: 'Abrimos às 18h · hoje', short: 'Em breve' };
+      if (ft_soon || st_soon) return { state: 'soon', main: 'Abrimos às 19h · hoje', short: 'Em breve' };
+
+      // Fechado — próxima abertura
+      let next = 'Quarta';
+      if (day === 0 && hm >= 1.5)      next = 'Quarta';
+      else if (day === 1 || day === 2) next = 'Quarta';
+      else if (day === 3 && hm < 18)   next = 'hoje às 18h';
+      else if (day === 4 && hm < 18)   next = 'hoje às 18h';
+      else if (day === 5 && hm < 19)   next = 'hoje às 19h';
+      else if (day === 6 && hm < 19)   next = 'hoje às 19h';
+      return { state: 'closed', main: `Fechado · próxima abertura: ${next}`, short: 'Fechado' };
+    }
+
+    function updateStatus() {
+      const s = computeStatus();
+
+      const pill = document.getElementById('status-pill');
+      pill.className = 'status ' + s.state;
+      document.getElementById('status-text').textContent = s.main;
+
+      const ab = document.getElementById('ab-status');
+      if (ab) {
+        ab.className = 'ab-status ' + s.state;
+        document.getElementById('ab-status-text').textContent = s.short;
+      }
+    }
+
+    updateStatus();
+    setInterval(updateStatus, 60 * 1000);
+
+    // ── App bar aparece ao rolar além do hero ──
+    (function () {
+      const appBar = document.getElementById('app-bar');
+      const hero   = document.querySelector('.hero');
+      if (!appBar || !hero) return;
+      function onScroll() {
+        const trigger = hero.offsetTop + hero.offsetHeight - 48;
+        appBar.classList.toggle('visible', window.scrollY > trigger);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    // ── Sincroniza a imagem do logo no app bar ──
+    (function () {
+      const img = document.getElementById('logo-img');
+      const abLogo = document.getElementById('ab-logo');
+      if (!img || !abLogo) return;
+      img.addEventListener('load', function () {
+        abLogo.innerHTML = '<img src="' + img.src + '" alt="Sutil Gastrobeer">';
+      });
+    })();
+
+    // ── Ripple tátil em botões e cards ──
+    (function () {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+      document.querySelectorAll('.cta-btn, .link-card, .social-btn').forEach(function (el) {
+        el.addEventListener('pointerdown', function (e) {
+          const r = el.getBoundingClientRect();
+          const size = Math.max(r.width, r.height);
+          const span = document.createElement('span');
+          span.className = 'ripple';
+          span.style.width = span.style.height = size + 'px';
+          span.style.left = (e.clientX - r.left - size / 2) + 'px';
+          span.style.top  = (e.clientY - r.top  - size / 2) + 'px';
+          if (el.classList.contains('cta-btn')) span.style.background = 'rgba(0,0,0,0.15)';
+          el.appendChild(span);
+          span.addEventListener('animationend', function () { span.remove(); });
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>
