@@ -198,21 +198,17 @@
 
     .foam-cap {
       opacity: 0;
-      transform: scale(.7);
-      transform-box: fill-box;
-      transform-origin: 50% 100%;
+      transform: translateY(7px);
       transition: opacity .45s var(--ease), transform .45s cubic-bezier(.34,1.56,.64,1);
     }
-    .foam-cap.show { opacity: 1; transform: none; }
+    .foam-cap.show { opacity: 1; transform: translateY(0); }
 
     .foam-drip {
       opacity: 0;
-      transform: translateY(-8px) scaleY(.3);
-      transform-box: fill-box;
-      transform-origin: top;
+      transform: translateY(-6px);
       transition: opacity .4s ease .15s, transform .5s cubic-bezier(.34,1.56,.64,1) .15s;
     }
-    .foam-drip.show { opacity: 1; transform: translateY(0) scaleY(1); }
+    .foam-drip.show { opacity: 1; transform: translateY(0); }
 
     .splash-text {
       text-align: center;
