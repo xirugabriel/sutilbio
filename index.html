@@ -1158,10 +1158,10 @@
       if (skipBtn) skipBtn.addEventListener('click', finish);
     })();
 
-    // ── Status dinâmico baseado no horário de Brasília ──
+    // ── Status dinâmico baseado no horário de Rondônia (Porto Velho, UTC−4) ──
     function computeStatus() {
       const now = new Date();
-      const brt = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+      const brt = new Date(now.toLocaleString('en-US', { timeZone: 'America/Porto_Velho' }));
       const day  = brt.getDay();   // 0=dom 1=seg ... 6=sáb
       const hour = brt.getHours();
       const min  = brt.getMinutes();
